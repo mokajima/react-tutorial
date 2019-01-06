@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSort } from '@fortawesome/free-solid-svg-icons'
 import './index.css';
 
 function Square(props) {
@@ -56,7 +58,8 @@ class Game extends React.Component {
         }
       ],
       stepNumber: 0,
-      xIsNext: true
+      xIsNext: true,
+      sort: 'ASC'
     };
   }
 
@@ -84,6 +87,12 @@ class Game extends React.Component {
       stepNumber: step,
       xIsNext: (step % 2) === 0
     });
+  }
+
+  toggleSort() {
+    this.setState(prevState => ({
+      sort: prevState.sort === 'ASC' ? 'DESC' : 'ASC'
+    }))
   }
 
   render() {
@@ -124,7 +133,15 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <button onClick={() => this.toggleSort()}>
+            <FontAwesomeIcon icon={faSort} />
+          </button>
+          <ol>
+            {this.state.sort === 'ASC'
+              ? <>{moves}</>
+              : <>{moves.reverse()}</>
+            }
+          </ol>
         </div>
       </div>
     );
