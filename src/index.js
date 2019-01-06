@@ -5,8 +5,14 @@ import { faSort } from '@fortawesome/free-solid-svg-icons'
 import './index.css';
 
 function Square(props) {
+  const { isHighlighted } = props
+
   return (
-    <button className="square" onClick={props.onClick}>
+    <button
+      className="square"
+      onClick={props.onClick}
+      style={{ background: isHighlighted ? 'yellow' : 'none' }}
+    >
       {props.value}
     </button>
   );
@@ -14,11 +20,15 @@ function Square(props) {
 
 class Board extends React.Component {
   renderSquare(i) {
+    const { squares } = this.props
+    const winner = calculateWinner(squares)
+
     return (
       <Square
         key={i}
-        value={this.props.squares[i]}
+        value={squares[i]}
         onClick={() => this.props.onClick(i)}
+        isHighlighted={winner && winner.line.includes(i)}
       />
     );
   }
@@ -118,7 +128,7 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = "Winner: " + winner;
+      status = "Winner: " + winner.mark;
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
@@ -169,7 +179,10 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return {
+        line: lines[i],
+        mark: squares[a]
+      };
     }
   }
   return null;
